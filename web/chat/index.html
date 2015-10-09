@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Math Chat</title>
-    <script type="text/x-mathjax-config">
+	<script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         extensions: ["tex2jax.js"],
         jax: ["input/TeX", "output/HTML-CSS"],
@@ -36,47 +36,12 @@
         $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
       };
     </script>
-<script>
-  //
-  //  Use a closure to hide the local variables from the
-  //  global namespace
-  //
-  (function () {
-    var QUEUE = MathJax.Hub.queue;  // shorthand for the queue
-    var math = null, box = null;    // the element jax for the math output, and the box it's in
-
-    //
-    //  Hide and show the box (so it doesn't flicker as much)
-    //
-    var HIDEBOX = function () {box.style.visibility = "hidden"}
-    var SHOWBOX = function () {box.style.visibility = "visible"}
-
-    //
-    //  Get the element jax when MathJax has produced it.
-    //
-    QUEUE.Push(function () {
-      math = MathJax.Hub.getAllJax("messagesDiv")[0];
-      box = document.getElementById("messageInput");
-      SHOWBOX(); // box is initially hidden so the braces don't show
-    });
-
-    //
-    //  The onchange event handler that typesets the math entered
-    //  by the user.  Hide the box, then typeset, then show it again
-    //  so we don't see a flash as the math is cleared and replaced.
-    //
-    window.UpdateMath = function (TeX) {
-      QUEUE.Push(HIDEBOX,["Text",math,"\\displaystyle{"+TeX+"}"],SHOWBOX);
-    }
-  })();
-</script>
   </head>
   <body>
     <div id='messagesDiv'></div>
-    <input type='text' id='nameInput' onchange="UpdateMath(this.value)" placeholder='Name'>
-    <input type='text' id='messageInput' onchange="UpdateMath(this.value)" placeholder='Message'>
+    <input type='text' id='nameInput' placeholder='Name'>
+    <input type='text' id='messageInput' placeholder='Message'>
     <p>
-      When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
       \[\ln\Gamma(1 + z) = -\gamma z + \sum_{k=2}^{\infty} \frac{\zeta(k)}{k}(-z)^{k}\]
     </p>
   </body>
