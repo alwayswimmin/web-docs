@@ -36,6 +36,7 @@
 
   <footer>
     <textarea id='messageInput' rows="5" placeholder='Type a message. Send: SHIFT + ENTER'></textarea>
+    <button onclick='send()'>Send</button>
   </footer>
 </div>
 
@@ -51,6 +52,11 @@
   // LISTEN FOR KEY EVENT
   messageField.keyup(function (e) {
     if (e.keyCode == 13, e.shiftKey) {
+		send();
+    }
+  });
+
+  function send() {
       //FIELD VALUES
       var username = nameField.val();
       var message = messageField.val();
@@ -58,8 +64,7 @@
       //SAVE DATA TO FIREBASE AND EMPTY FIELD
       messagesRef.push({name:username, text:message});
       messageField.val('');
-    }
-  });
+  }
 
   // Add a callback that is triggered for each chat message.
   messagesRef.limitToLast(100).on('child_added', function (snapshot) {
