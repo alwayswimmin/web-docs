@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Republican Presidential Race</title>
+		<link rel="stylesheet" type="text/css" href="../../css/style.css">
+		<script type="text/javascript" src="quiz.js"></script>
+	</head>
+	<body onload="onStart()">
+		<h2>2016 Republican Presidential Race</h2>
+		<p>Name the individuals who participated in the August 6th
+				Republican Debate (both the primetime debate
+				and the `happy hour' debate earlier).</p>
+		<p><button id="start" onclick="startTimer()">Begin</button>
+			<button id="forfeit" onclick="endGame()">Forfeit</button>
+			<button onclick="reset()">Reset</button></p>
+		<p>Input answer: <input type="text" id="userinput"
+				oninput="checkAnswer()" value="Answer here!"></input>
+		</p>
+		<p>Timer: <a id="timer">120</a></p>
+		<p>Score: <a id="score"></a></p>
+		<p id="answers">Your answers:</p>
+		<p><a href="../index.html">Web Development</a></p>
+		<p><a href="../../index.html">Home</a></p>
+	</body>
+</html>

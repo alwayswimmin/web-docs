@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>DOM Tree Navigation</title>
+	<style type="text/css">
+		body {
+			background-color: lightblue;
+		}
+		* {
+			transition-duration: 1s;
+		}
+		div{
+			background-color: orange;
+			border-radius: 8px;
+			border: 1px black solid;
+			margin:12px;
+			padding: 2px;
+		}
+		p{
+			background-color: aqua;
+			border: 2px black dashed;
+			opacity: .4;
+		}
+		ul{
+			background-color: yellow;
+			border: 2px black dashed;
+			opacity: .7;
+		}
+		li{
+			background-color: red;
+			border: 1px black dotted;
+		}
+		span{
+			background-color: blue;
+			border: 1px black dotted;
+		}
+		.location{
+			width: 40%;
+			background-color: #CAAEF5;
+		}
+		.animal{
+			background-color: #669666;
+		}
+	</style>
+	<script>
+		function highlight() {
+			var curr = event.target;
+			var next = curr.firstElementChild;
+			while(next == null) {
+				if(curr == null) {
+					next = document.body;
+					break;
+				}
+				next = curr.nextElementSibling;
+				curr = curr.parentNode;
+			}
+			var former = next.style.opacity;
+			if(former != '0') {
+				next.style.opacity = 0;
+				setTimeout(function(){next.style.opacity = former},1000);
+			}
+		}
+	</script>
+</head>
+<body class="fadeIn" onclick="highlight()">
+	<h2>Click the Elements!</h2>
+	<div class="location">
+		Zoo
+		<div class="animal">
+			Giraffe
+			<div>Ga</div>
+			<div>Gb</div>
+			<div>Gc</div>
+			<div>Gd</div>
+			<div>Ge</div>
+		</div>
+	</div>
+	<div class="location">
+		Wild
+		<div class="animal">
+			Lion
+			<div id="La">
+				La
+				<ul>
+					<li>Laa</li>
+					<li>Lab <span style="font-weight:bold">Laba</span> <span style="font-weight:bold">Labb</span> <span style="font-weight:bold">Labc</span></li>
+					<li>Lac</li>
+					<li>Lad</li>
+				</ul>
+			</div>
+			<div>Lb</div>
+			<div>Lc</div>
+		</div>
+		<div class="animal">
+			Elephant
+			<div>Ea
+				<p>Eaa</p>
+			</div>
+			<p>Eb</p>
+			<p>Ec</p>
+		</div>
+	</div>
+	<p><a href="../index.html">Web Development</a></p>
+	<p><a href="../../index.html">Home</a></p>
+	<p>... click here to fade everything!</p>
+</body>
+</html>

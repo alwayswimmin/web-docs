@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>GPA Calculator</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="gpa.js"></script>
+	</head>
+	<body onload="upd()">
+		<h1>Period 4</h1>
+		<h1>Samuel Hsiang</h1>
+		<table border="1">
+			<tr>
+			<td>GPA:</td><td><a id="gpa"></a></td>
+			</tr>
+			<tr>
+			<td>Quarter 1:</td><td><select id="q1" onchange="upd()">
+				<option value = "A">A</option>
+				<option value = "B">B</option>
+				<option value = "C">C</option>
+				<option value = "D">D</option>
+				<option value = "F">F</option>
+			</select></td>
+			</tr>
+			<tr>
+			<td>Quarter 2:</td><td><select id="q2" onchange="upd()">
+				<option value = "A">A</option>
+				<option value = "B">B</option>
+				<option value = "C">C</option>
+				<option value = "D">D</option>
+				<option value = "F">F</option>
+			</select></td>
+			</tr>
+		</table>
+		<p><a href="../index.html">Web Development</a></p>
+		<p><a href="../../index.html">Home</a></p>
+	</body>
+</html>

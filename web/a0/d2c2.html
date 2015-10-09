@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>JavaScript Challenges</title>
+		<link rel="stylesheet" type="text/css" href="../../css/style.css">
+	</head>
+	<body onload="startTime()">
+		<h2>JavaScript Challenges</h2>
+		
+		<p id="time"></p>		
+		
+		<p id="d2c2"></p>
+		
+		<p>
+		Name: <input type="text" id="Name" name="Name" oninput="func2()" value="John Smith"><br>
+		Hello, <ins id="name">John Smith</ins>!
+		</p>
+
+		<button onclick="myFunction()">+1 Cookie</button>
+		<p id="cookie">0</p>
+		
+		<p><a href="../index.html">Web Development</a></p>
+		<p><a href="../../index.html">Home</a></p>
+		
+		<script>
+			alert("Samuel's First Day of JavaScript");
+			var n = 1654 * 723;
+			document.getElementById("d2c2").innerHTML = n;
+			function func2() {
+				document.getElementById("name").innerHTML = 
+					document.getElementById("Name").value;
+			}
+			var num = 0;
+			function myFunction() {
+				num += 1;
+				document.getElementById("cookie").innerHTML = num;
+			}
+			function startTime() {
+			    var today=new Date();
+			    var h=today.getHours();
+			    var m=today.getMinutes();
+			    var s=today.getSeconds();
+			    m = twodigit(m);
+			    s = twodigit(s);
+			    document.getElementById("time").innerHTML = h+":"+m+":"+s;
+			    var t = setTimeout(function(){startTime()},500);
+			}
+			function twodigit(i) {
+			    if (i < 10) {i = "0" + i};
+			    return i;
+			}
+		</script>
+	</body>
+</html>
