@@ -69,7 +69,7 @@ function getCookie(cname) {
 }
 
   function useSavedHandle() {
-    nameField.html(getCookie("handle"));
+    nameField.val(getCookie("handle"));
   }
 
   // LISTEN FOR KEY EVENT
@@ -84,7 +84,7 @@ function getCookie(cname) {
       var username = nameField.val();
       var message = messageField.val();
 
-      setCookie("handle", username, 365);
+      setCookie("handle", "username", 7);
 
       //SAVE DATA TO FIREBASE AND EMPTY FIELD
       messagesRef.push({name:username, text:message});
@@ -103,7 +103,7 @@ function getCookie(cname) {
     var messageElement = $("<li>");
     var nameElement = $("<strong class='example-chat-username'></strong>")
     nameElement.text(username);
-    messageElement.text(message).prepend(nameElement);
+    messageElement.html(message).prepend(nameElement);
 
     //ADD MESSAGE
     messageList.append(messageElement);
