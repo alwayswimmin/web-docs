@@ -51,7 +51,7 @@
   var messageList = $('#example-messages');
   // LISTEN FOR KEY EVENT
   messageField.keyup(function (e) {
-    if (e.keyCode == 13, e.shiftKey) {
+    if (e.keyCode == 13 && e.shiftKey) {
 		send();
     }
   });
