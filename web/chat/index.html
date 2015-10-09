@@ -35,7 +35,7 @@
   <ul id='example-messages' class="example-chat-messages"></ul>
 
   <footer>
-    <textarea id='messageInput' rows="5" placeholder='Type a message...'> </textarea>
+    <textarea id='messageInput' rows="5" placeholder='Type a message. Send: SHIFT + ENTER'></textarea>
   </footer>
 </div>
 
@@ -48,28 +48,15 @@
   var messageField = $('#messageInput');
   var nameField = $('#nameInput');
   var messageList = $('#example-messages');
-  var justPushed;
-  // LISTEN FOR KEYPRESS EVENT
-  messageField.keypress(function (e) {
-    if (e.keyCode == 13) {
+  // LISTEN FOR KEY EVENT
+  messageField.keyup(function (e) {
+    if (e.keyCode == 13, e.shiftKey) {
       //FIELD VALUES
       var username = nameField.val();
       var message = messageField.val();
 
-	if (message == '/clear'){
-		messagesRef.remove();
-		location.reload();
-		}
-	else if (message == '/undo'){
-		if (justPushed != null){
-			justPushed.remove();
-			location.reload();
-		}
-	}
-	else{
       //SAVE DATA TO FIREBASE AND EMPTY FIELD
-      justPushed = messagesRef.push({name:username, text:message});
-      }
+      messagesRef.push({name:username, text:message});
       messageField.val('');
     }
   });
@@ -88,7 +75,7 @@
     messageElement.text(message).prepend(nameElement);
 
     //ADD MESSAGE
-    messageList.append(messageElement)
+    messageList.append(messageElement);
 
 	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 

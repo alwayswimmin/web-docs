@@ -89,7 +89,8 @@
     margin: 0px;
     padding: 20px;
     height: 300px;
-    overflow: auto; }
+    overflow: auto;
+	}
     .example-chat ul li {
       margin-bottom: 3px;
       line-height: 15px; }
