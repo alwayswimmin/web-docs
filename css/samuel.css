@@ -14,3 +14,8 @@
      make sure you have an empty gif 
   background-image: url('empty.gif');*/
 }
+
+.link-override{
+  position:relative;
+  z-index: 2;
+}
