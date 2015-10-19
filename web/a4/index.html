@@ -142,17 +142,25 @@ var sp = ['Gendive', 'Mateo', 'Rayas Abundis', 'Pou'];
 	form["city"].value = getCookie("city");
 	form["state"].value = getCookie("state");
 	form["zip"].value = getCookie("zip");
+	if(getCookie("date")) form["date"].value = getCookie("date");
+	form["language"].value = getCookie("language");
+	form["listType"].value = getCookie("listType");
+	upd();
+	form["teacher"].value = getCookie("teacher");
+	form["comments"].value = getCookie("comments");
  }
 function listType() {
 	if(document.getElementsByName('listType')[0].checked == true){
 		// dropdown
 		document.getElementById('language').size = 1;
-		document.getElementById('teacher').size = 1;
+		if(document.getElementById('teacher').style.visibility == "visible")
+			document.getElementById('teacher').size = 1;
 	}
 	else{
 		// listview
 		document.getElementById('language').size = document.getElementById('language').options.length;
-		document.getElementById('teacher').size = document.getElementById('teacher').options.length;
+		if(document.getElementById('teacher').style.visibility == "visible")
+			document.getElementById('teacher').size = document.getElementById('teacher').options.length;
 	}
 }
 function upd(){
@@ -184,6 +192,7 @@ function upd(){
 			break;
 		default:
 			teacher.style.visibility = "collapse";
+			listType();
 			return;
 	}
 	teacher.style.visibility = "visible";
@@ -200,13 +209,29 @@ function upd(){
 	listType();
 }
 function validateForm() {
+	// set cookies
 	var form = document.forms["form"];
 	setCookie("name", form["name"].value, 30);
 	setCookie("email", form["email"].value, 30);
 	setCookie("city", form["city"].value, 30);
 	setCookie("state", form["state"].value, 30);
-	alert(form["state"].value);
 	setCookie("zip", form["zip"].value, 30);
+	setCookie("date", form["date"].value, 30);
+	setCookie("listType", form["listType"].value, 30);
+	setCookie("language", form["language"].value, 30);
+	setCookie("teacher", form["teacher"].value, 30);
+	setCookie("comments", form["comments"].value, 30);
+	
+	// validate
+	var name = form["name"].value;
+	var email = form["email"].value;
+	var city = form["city"].value;
+	var zip = form["zip"].value;
+	var validname = /[\w -'_]+/
+	var validemail = //
+
+	// alert
+	alert("Thanks for participating!");
 }
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
