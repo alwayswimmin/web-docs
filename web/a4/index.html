@@ -10,18 +10,18 @@
 		<form name="form" autocomplete="on" action="" onsubmit="return validateForm()" method="post">
 			<table>
 				<tr>
-					<td>Name:</td><td><input type="text" id="name" name='name' placeholder="Thomas Rudwick" required></input></td>
+					<td>Name:</td><td><input type="text" id="name" name='name' onfocus="changecolor('name')" placeholder="Thomas Rudwick" required></input></td>
 				</tr>
 				<tr>
-					<td>Email:</td><td><input type="email" id="email" name='email' placeholder="tmrudwick@fcps.edu" required></input></td>
+					<td>Email:</td><td><input type="email" id="email" name='email' onfocus="changecolor('email')" placeholder="tmrudwick@fcps.edu" required></input></td>
 				</tr>
 				<tr>
-					<td>City:</td><td><input type="text" id="city" name='city' placeholder="Alexandria" required></input></td>
+					<td>City:</td><td><input type="text" id="city" name='city' onfocus="changecolor('city')" placeholder="Alexandria" required></input></td>
 				</tr>
 				<tr>
 					<td>State:</td>
 					<td>
-						<select name="state">
+						<select name="state" required>
 							<option value=""></option>
 							<option value="AL">Alabama</option>
 							<option value="AK">Alaska</option>
@@ -78,10 +78,10 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Zip Code:</td><td><input type="text" id="zip" name='zip' placeholder="22312" required></input></td>
+					<td>Zip Code:</td><td><input type="text" id="zip" name='zip' onfocus="changecolor('zip')" placeholder="22312" required></input></td>
 				</tr>
 				<tr>
-					<td>Date:</td><td><input type="date" id="date" name='date' required></input></td>
+					<td>Date:</td><td><input type="date" id="date" name='date' onfocus="changecolor('date')" placeholder= "YYYY-MM-DD" required></input></td>
 				</tr>
 				<tr>
 					<td>
@@ -92,7 +92,7 @@
 					<input type='radio' name='listType' value='list-view' onclick='upd()'>list-view
 					</td>
 					<td>
-						<select id='language' name='language' onchange="upd()">
+						<select id='language' name='language' onchange="upd()" required>
 							<option value='' selected="selected"></option>
 							<option value='ch'>Chinese</option>
 							<option value='fr'>French</option>
@@ -132,8 +132,12 @@ var ja = ['Otani'];
 var la = ['Conklin', 'Lister'];
 var ru = ['Sandstrom'];
 var sp = ['Gendive', 'Mateo', 'Rayas Abundis', 'Pou'];
- 
- function onStart() { 
+
+function changecolor(id) {
+	document.getElementById(id).style.backgroundColor = "#FFFFFF";
+}
+
+function onStart() { 
   document.getElementById('date').valueAsDate = new Date();
  	document.getElementById("name").focus();
 	upd();
@@ -223,15 +227,46 @@ function validateForm() {
 	setCookie("comments", form["comments"].value, 30);
 	
 	// validate
-	var name = form["name"].value;
-	var email = form["email"].value;
-	var city = form["city"].value;
-	var zip = form["zip"].value;
-	var validname = /[\w -'_]+/
-	var validemail = //
-
+	var myname = form["name"].value;
+	var myemail = form["email"].value;
+	var mycity = form["city"].value;
+	var myzip = form["zip"].value;
+	var mydate = form["date"].value;
+	var validname = /^[\w '-]+$/;
+	var validemail = /^[\w._%+-]+@[\w.-]+\.[A-Za-z]{2,}$/;
+	var validcity = /^[\w '-]+$/;
+	var validzip = /^[0-9]{5}(?:-[0-9]{4})?$/;
+	var validdate = /^\d{2}(\d{2})?[-\/]\d{2}[-\/]\d{2}$/;
+	var flag = 0;
+	if(!validname.test(myname)) {
+		flag = 1;
+		document.getElementById("name").style.backgroundColor = "#FF3333";
+	}
+	if(!validemail.test(myemail)) {
+		flag = 1;
+		document.getElementById("email").style.backgroundColor = "#FF3333";
+	}
+	if(!validcity.test(mycity)) {
+		flag = 1;
+		document.getElementById("city").style.backgroundColor = "#FF3333";
+	}
+	if(!validzip.test(myzip)) {
+		flag = 1;
+		document.getElementById("zip").style.backgroundColor = "#FF3333";
+	}
+	if(!validdate.test(mydate)) {
+		flag = 1;
+		document.getElementById("date").style.backgroundColor = "#FF3333";
+	}
+	if(flag == 1) {
+		alert("Please correct the highlighted fields.");
+		return false;
+	}
+	
 	// alert
 	alert("Thanks for participating!");
+
+	return true;
 }
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
