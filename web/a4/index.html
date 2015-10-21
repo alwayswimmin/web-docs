@@ -4,6 +4,7 @@
 		<title>Form</title>
 		<link rel="stylesheet" type="text/css" href="../../css/style.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	</head>
 	<body onload="onStart()">
 		<h2>Form</h2>
@@ -121,6 +122,12 @@
 				</tr>
 			</table>
 		</form>
+		<div id="alert-good" class="alert alert-success" role="alert" style="display:none">
+			<strong>Thanks!</strong> You successfully submitted.
+		</div>
+		<div id="alert-bad" class="alert alert-danger" role="alert" style="display:none">
+		        <strong>Something went wrong.</strong> Please correct the highlighted fields.
+	        </div>
 
 		<p><a href="../index.html">Web Development</a></p>
 		<p><a href="../../index.html">Home</a></p>
@@ -213,6 +220,9 @@ function upd(){
 	listType();
 }
 function validateForm() {
+	document.getElementById("alert-good").style.display = "none";
+	document.getElementById("alert-bad").style.display = "none";
+
 	// set cookies
 	var form = document.forms["form"];
 	setCookie("name", form["name"].value, 30);
@@ -259,14 +269,15 @@ function validateForm() {
 		document.getElementById("date").style.backgroundColor = "#FF3333";
 	}
 	if(flag == 1) {
-		alert("Please correct the highlighted fields.");
+		document.getElementById("alert-bad").style.display = "block";
 		return false;
 	}
 	
 	// alert
-	alert("Thanks for participating!");
+	document.getElementById("alert-good").style.display = "block";
+	return false;
 
-	return true;
+	// return true;
 }
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
