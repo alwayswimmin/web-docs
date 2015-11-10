@@ -10,21 +10,20 @@
 <script>
 			function validateForm() {
 				getWords();
+				return false; // lol
 			}
 			function getWords() {
 				var exp = document.getElementById('req').value;
 				var xmlhttp = new XMLHttpRequest();
 				xmlhttp.onreadystatechange = function() {
-					document.getElementById("bin").innerHTML = 'waiting';
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-						document.getElementById("bin").innerHTML = JSON.parse(xmlhttp.responseText);
+						document.getElementById("output").innerHTML = JSON.parse(xmlhttp.responseText);
 					}
 				}
 				var args = {
-					action: 'decToBin',
-					decimal: num1
+					regex: exp,
 				};
-				xmlhttp.open("GET", "challenge.php?" + dw_encodeVars(args), true);
+				xmlhttp.open("GET", "scrabble.php?" + dw_encodeVars(args), true);
 				xmlhttp.send();
 			}
 
@@ -55,7 +54,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="../../index.html">Home</a></li>
+                <li><a href="../../index.html">Home</a></li>
                 <li><a href="../index.html">Web</a></li>
                 <li><a href="../../index.html#about">About/Contact</a></li>
                 <li class="dropdown">
@@ -76,18 +75,25 @@
 
       </div>
     </div>
-    		<br><br>
+    <div class="container">
+    	<div class="page-header">
 		<h2>Scrabble</h2>
-		<form class="form-horizontal" name="form" autocomplete="on" action="" onsubmit="return validateForm()" method="post">
-			<div class="form-group col-md-7" id="reqdiv">
-				<label class="col-sm-2 control-label" for="req">Input</label>
-				<div class="col-sm-10"><input type="text" class='form-control' id="req" name='req'></input></div>
-			</div>
-			<div class="form-group col-md-7" id="submit">
-				<label class="col-sm-2 control-label" for="req">Submit</label>
-				<div class="col-sm-10"><input class="btn btn-default" type="submit" value="Send"></input><div>
-			</div>
-		</form>
+	</div>
+	<form class="form-horizontal" name="form" autocomplete="on" action="" onsubmit="return validateForm()" method="post">
+		<div class="form-group col-md-7" id="reqdiv">
+			<label class="col-sm-2 control-label" for="req">Input</label>
+			<div class="col-sm-10"><input type="text" class='form-control' id="req" name='req'></input></div>
+		</div>
+		<div class="form-group col-md-7" id="submit">
+			<label class="col-sm-2 control-label" for="submit">Submit</label>
+			<div class="col-sm-10"><input class="btn btn-default" type="submit"  id="submit" name="submit" value="Send"></input><div>
+		</div>
+	</form>
+	<div class="page-header">
+		<h3>Output</h3>
+	</div>
+	<p id="output"></p>
+    </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
