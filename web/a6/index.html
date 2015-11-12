@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas</title>
+		<link rel="stylesheet" type="text/css" href="../../css/style.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    		<link href="../../css/carousel.css" rel="stylesheet">
+		<link href="../../css/samuel.css" rel="stylesheet">
+	</head>
+<body onload="onLoad()">
+    <div class="navbar-wrapper">
+      <div class="container">
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">2016shsiang</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../index.html">Web</a></li>
+                <li><a href="../../index.html#about">About/Contact</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="../../research/index.html">Research</a></li>
+                    <li><a href="#">Activities</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li class="dropdown-header">Personal Projects</li>
+                    <li><a href="../../index.html#cs_guide">Crash Course Coding Companion (cs_guide)</a></li>
+                    <li><a href="../../index.html#math-chat">Math Chat</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+      </div>
+    </div>
+    <div class="container">
+    	<div class="page-header">
+		<h2>Canvas</h2>
+	</div>
+    </div>
+    <div class="container">
+    	<canvas width="600" height="600" style="border:solid 1px" id="mycanvas" onclick="handle()"></canvas>
+    </div>
+    <div class="container">
+    	<div class="page-header">
+		<h3>Options</h3>
+	</div>
+			<div id="options" class="btn-group" data-toggle="buttons">
+			  <label class="btn btn-primary active">
+			    <input type="radio" name="options" id="dot" autocomplete="off" checked> Dot
+			  </label>
+			  <label class="btn btn-primary">
+			    <input type="radio" name="options" id="select" autocomplete="off"> Select
+			  </label>
+			  <label class="btn btn-primary">
+			    <input type="radio" name="options" id="click" autocomplete="off"> Click and Drag
+			  </label>
+			</div>
+			<div style="padding-top:5px" id="buttons">
+			  <button class="btn btn-warning" id="clear">Clear</button>
+			</div>
+    </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			// from http://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
+			function relMouseCoords(event){
+			    var totalOffsetX = 0;
+			    var totalOffsetY = 0;
+			    var canvasX = 0;
+			    var canvasY = 0;
+			    var currentElement = this;
+
+			    do{
+				totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+				totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+			    }
+			    while(currentElement = currentElement.offsetParent)
+
+			    canvasX = event.pageX - totalOffsetX;
+			    canvasY = event.pageY - totalOffsetY;
+
+			    return {x:canvasX, y:canvasY}
+			}
+
+			var canvas;
+			var context;
+
+			var started = false;
+			var startcoords;
+
+			var dots = [];
+
+			function onLoad() {
+				HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
+				canvas = document.getElementById("mycanvas");
+				context = canvas.getContext("2d");
+				canvas.addEventListener('mousedown',mouseDown,false);
+				canvas.addEventListener('mouseup',mouseUp,false);
+			}
+			
+			function mouseDown() {
+				if(!started) {
+					startcoords = canvas.relMouseCoords(event);
+					started = true;
+				}
+			}
+
+			function mouseMove() {
+				if(started) {
+					clearCanvas();
+					redrawDots();
+					coords = canvas.relMouseCords(event);
+					context.beginPath();
+					context.setLineDash([6]);
+					context.strokeRect(startcoords.x,startcoords.y,coords.x-startcoords.x,coords.y-startcoords.y);	
+				}
+			}
+
+			function mouseUp() {
+				started = false;
+
+			}
+
+			function drawDot() {
+				coords = canvas.relMouseCoords(event);
+				context.beginPath();
+				context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+				context.fillStyle = 'green';
+				context.fill();
+				context.lineWidth = 2;
+				context.strokeStyle = '#003300';
+				context.stroke();
+				context.closePath();
+				dots.push(coords);
+			}
+
+			function redrawDots() {
+				for(var k = 0; k < dots.length; ++k) {
+					coords = dots[k];
+					context.beginPath();
+					context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+					context.fillStyle = 'green';
+					context.fill();
+					context.lineWidth = 2;
+					context.strokeStyle = '#003300';
+					context.stroke();
+					context.closePath();
+				}
+			}
+
+			function select() {
+			}
+
+			function clear() {
+				context.clearRect(0, 0, canvas.width, canvas.height);
+			}
+
+			function handle() {
+				if(document.getElementById("dot").checked) {
+					drawDot();
+				}
+				if(document.getElementById("select").checked) {
+					select();
+				}
+			}
+
+			$("#clear").click(function() {
+				dots = [];
+				clear();
+			});
+		</script>
+	</body>
+</html>
