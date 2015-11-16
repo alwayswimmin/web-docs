@@ -45,6 +45,7 @@
 
       </div>
     </div>
+    <br><br>
     <div class="container">
     	<div class="page-header">
 		<h2>Canvas</h2>
@@ -103,7 +104,9 @@
 			var context;
 
 			var started = false;
-			var startcoords;
+			var selectmode = false;
+			var startcoordsx;
+			var startcoordsy;
 
 			var dots = [];
 
@@ -113,29 +116,34 @@
 				context = canvas.getContext("2d");
 				canvas.addEventListener('mousedown',mouseDown,false);
 				canvas.addEventListener('mouseup',mouseUp,false);
+				canvas.addEventListener('mousemove',mouseMove,false);
 			}
 			
 			function mouseDown() {
-				if(!started) {
-					startcoords = canvas.relMouseCoords(event);
+				if(selectmode && !started) {
+					startcoordsx = canvas.relMouseCoords(event).x;
+					startcoordsy = canvas.relMouseCoords(event).y;
 					started = true;
 				}
 			}
 
 			function mouseMove() {
-				if(started) {
+				if(selectmode && started) {
 					clearCanvas();
 					redrawDots();
 					coords = canvas.relMouseCords(event);
 					context.beginPath();
 					context.setLineDash([6]);
-					context.strokeRect(startcoords.x,startcoords.y,coords.x-startcoords.x,coords.y-startcoords.y);	
+					context.strokeRect(startcoordsx,startcoordsy,coords.x-startcoordsx,coords.y-startcoordsy);	
+					console.log(startcoordsx + " " + coords.x);
+					// doesn't work
 				}
 			}
 
 			function mouseUp() {
-				started = false;
-
+				if(selectmode) {
+					started = false;
+				}
 			}
 
 			function drawDot() {
@@ -166,13 +174,15 @@
 			}
 
 			function select() {
+				selectmode = true;
 			}
 
-			function clear() {
+			function clearCanvas() {
 				context.clearRect(0, 0, canvas.width, canvas.height);
 			}
 
 			function handle() {
+				selectmode = false;
 				if(document.getElementById("dot").checked) {
 					drawDot();
 				}
@@ -183,7 +193,7 @@
 
 			$("#clear").click(function() {
 				dots = [];
-				clear();
+				clearCanvas();
 			});
 		</script>
 	</body>
