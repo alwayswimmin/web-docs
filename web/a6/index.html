@@ -108,8 +108,10 @@
 
 			var started = false;
 			var startcoords;
+			var endcoords;
 
 			var dots = [];
+			var selected = new Array(100);
 
 			function onLoad() {
 				HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
@@ -142,10 +144,48 @@
 			function mouseUp(event) {
 				if(selectmode) {
 					started = false;
+					endcoords = canvas.relMouseCoords(event);
 					toggleSelectedDots();
 				}
 				if(dotmode) {
 					drawDot();
+				}
+			}
+
+			function inRect(var coords, var a, var b) {
+				var lx = a.x;
+				var ly = a.y;
+				var hx = b.x;
+				var hy = b.y;
+				if(lx > hx) {
+					var t = lx;
+					lx = hx;
+					hx = t;
+				}
+				if(ly > hy) {
+					var t = ly;
+					ly = hy;
+					hy = t;
+				}
+				return coords.x >= lx && coords.x <= hx && coords.y >= ly && coords.y <= hy;
+			}
+
+			function colorSelectedDots() {
+				context.fillStyle = 'red';
+				for(var k = 0; k < dots.length; ++k) {
+					if(selected[k]) {
+						context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+						context.fill();
+					}
+				}
+			}
+
+			function toggleSelectedDots() {
+				for(var k = 0; k < dots.length; ++k) {
+					coords = dots[k];
+					if(inrect(coords, startcoords, endcoords)) {
+						selected[k] = !selected[k];
+					}
 				}
 			}
 
