@@ -111,7 +111,7 @@
 			var endcoords;
 
 			var dots = [];
-			var selected = new Array(100);
+			var selected = [];
 
 			function onLoad() {
 				HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
@@ -146,13 +146,16 @@
 					started = false;
 					endcoords = canvas.relMouseCoords(event);
 					toggleSelectedDots();
+					colorSelectedDots();
+					clearCanvas();
+					redrawDots();
 				}
 				if(dotmode) {
 					drawDot();
 				}
 			}
 
-			function inRect(var coords, var a, var b) {
+			function inRect(coords, a, b) {
 				var lx = a.x;
 				var ly = a.y;
 				var hx = b.x;
@@ -171,11 +174,16 @@
 			}
 
 			function colorSelectedDots() {
-				context.fillStyle = 'red';
+				context.fillStyle = 'blue';
 				for(var k = 0; k < dots.length; ++k) {
 					if(selected[k]) {
-						context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+						context.beginPath();
+						context.arc(dots[k].x, dots[k].y, 5, 0, 2 * Math.PI, false);
 						context.fill();
+						context.lineWidth = 2;
+						context.strokeStyle = '#003300';
+						context.stroke();
+						context.closePath();
 					}
 				}
 			}
@@ -183,7 +191,7 @@
 			function toggleSelectedDots() {
 				for(var k = 0; k < dots.length; ++k) {
 					coords = dots[k];
-					if(inrect(coords, startcoords, endcoords)) {
+					if(inRect(coords, startcoords, endcoords)) {
 						selected[k] = !selected[k];
 					}
 				}
@@ -200,6 +208,7 @@
 				context.stroke();
 				context.closePath();
 				dots.push(coords);
+				selected.push(0);
 			}
 
 			function redrawDots() {
@@ -208,7 +217,7 @@
 					coords = dots[k];
 					context.beginPath();
 					context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
-					context.fillStyle = 'green';
+					context.fillStyle = selected[k] ? 'blue' : 'green';
 					context.fill();
 					context.lineWidth = 2;
 					context.strokeStyle = '#003300';
@@ -234,6 +243,7 @@
 
 			$("#clear").click(function() {
 				dots = [];
+				selected = [];
 				clearCanvas();
 			});
 		</script>
