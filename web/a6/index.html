@@ -63,14 +63,16 @@
 			    <input type="radio" name="options" id="dot" autocomplete="off" checked onchange="handle()"> Dot
 			  </label>
 			  <label class="btn btn-primary">
-			    <input type="radio" name="options" id="select" autocomplete="off" onchange="handle()"> Select
+			    <input type="radio" name="options" id="select" autocomplete="off" onchange="handle()"> Toggle Select
 			  </label>
 			  <label class="btn btn-primary">
-			    <input type="radio" name="options" id="click" autocomplete="off" onchange="handle()"> Click and Drag
+			    <input type="radio" name="options" id="drag" autocomplete="off" onchange="handle()"> Click and Drag
 			  </label>
 			</div>
 			<div style="padding-top:5px" id="buttons">
 			  <button class="btn btn-warning" id="clear">Clear</button>
+			  <button class="btn" id="deselect">Deselect All</button>
+			  <button class="btn" id="drawedges">Draw Edges</button>
 			</div>
     </div>
     <!-- Bootstrap core JavaScript
@@ -102,9 +104,11 @@
 
 			var canvas;
 			var context;
+			var coords;
 
 			var dotmode = false;
 			var selectmode = false;
+			var dragmode = false;
 
 			var started = false;
 			var startcoords;
@@ -127,6 +131,10 @@
 					startcoords = canvas.relMouseCoords(event);
 					started = true;
 				}
+				if(dragmode && !started) {
+					startcoords = canvas.relMouseCoords(event);
+					started = true;
+				}
 			}
 
 			function mouseMove(event) {
@@ -139,6 +147,11 @@
 					context.strokeRect(startcoords.x,startcoords.y,coords.x-startcoords.x,coords.y-startcoords.y);	
 					context.setLineDash([0]);
 				}
+				if(dragmode && started) {
+					clearCanvas();
+					coords = canvas.relMouseCoords(event);
+					redrawDotsDrag({x:(coords.x-startcoords.x), y:(coords.y-startcoords.y)});
+				}
 			}
 
 			function mouseUp(event) {
@@ -149,6 +162,12 @@
 					colorSelectedDots();
 					clearCanvas();
 					redrawDots();
+				}
+				if(dragmode) {
+					started = false;
+					endcoords = canvas.relMouseCoords(event);
+					clearCanvas();
+					updateDots({x:(endcoords.x-startcoords.x), y:(endcoords.y-startcoords.y)});
 				}
 				if(dotmode) {
 					drawDot();
@@ -226,6 +245,60 @@
 				}
 			}
 
+			function updateDots(delta) {
+				for(var k = 0; k < dots.length; ++k) {
+					coords = dots[k];
+					if(selected[k]) {
+						dots[k].x += delta.x;
+						dots[k].y += delta.y;
+					}
+					context.beginPath();
+					context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+					context.fillStyle = selected[k] ? 'blue' : 'green';
+					context.fill();
+					context.lineWidth = 2;
+					context.strokeStyle = '#003300';
+					context.stroke();
+					context.closePath();
+				}
+			}
+
+			function redrawDotsDrag(delta) {
+				context.setLineDash([0]);
+				for(var k = 0; k < dots.length; ++k) {
+					coords = {x:dots[k].x, y:dots[k].y};
+					if(selected[k]) {
+						coords.x += delta.x;
+						coords.y += delta.y;
+					}
+					context.beginPath();
+					context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+					context.fillStyle = selected[k] ? 'blue' : 'green';
+					context.fill();
+					context.lineWidth = 2;
+					context.strokeStyle = '#003300';
+					context.stroke();
+					context.closePath();
+				}
+			}
+
+			function drawEdges() {
+				context.setLineDash([0]);
+				for(var k = 0; k < dots.length; ++k) {
+					for(var j = k + 1; j < dots.length; ++j) {
+						if(selected[k] && selected[j]) {
+							context.beginPath();
+							context.lineWidth = 2;
+							context.strokeStyle = '#003300';
+							context.moveTo(dots[k].x, dots[k].y);
+							context.lineTo(dots[k].x, dots[k].y);
+							context.stroke();
+							context.closePath();
+						}
+					}
+				}
+			}
+
 			function clearCanvas() {
 				context.clearRect(0, 0, canvas.width, canvas.height);
 			}
@@ -233,13 +306,27 @@
 			function handle() {
 				dotmode = false;
 				selectmode = false;
+				dragmode = false;
 				if(document.getElementById("dot").checked) {
 					dotmode = true;
 				}
 				if(document.getElementById("select").checked) {
 					selectmode = true;
 				}
+				if(document.getElementById("drag").checked) {
+					dragmode = true;
+				}
 			}
+
+			$("#drawedges").click(drawEdges(););
+
+			$("#deselect").click(function deselectAll() {
+				for(var k = 0; k < dots.length; ++k) {
+					selected[k] = false;
+				}
+				clearCanvas();
+				redrawDots();
+			});
 
 			$("#clear").click(function() {
 				dots = [];
