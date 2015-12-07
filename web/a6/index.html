@@ -60,7 +60,10 @@
 	</div>
 			<div id="options" class="btn-group" data-toggle="buttons">
 			  <label class="btn btn-primary active">
-			    <input type="radio" name="options" id="dot" autocomplete="off" checked onchange="handle()"> Dot
+			    <input type="radio" name="options" id="dynamic" autocomplete="off" checked onchange="handle()"> Dynamic
+			  </label>
+			  <label class="btn btn-primary">
+			    <input type="radio" name="options" id="dot" autocomplete="off" onchange="handle()"> Draw Dot
 			  </label>
 			  <label class="btn btn-primary">
 			    <input type="radio" name="options" id="select" autocomplete="off" onchange="handle()"> Toggle Select
@@ -72,7 +75,7 @@
 			<div style="padding-top:5px" id="buttons">
 			  <button class="btn" id="deselect">Deselect All</button>
 			  <button class="btn" id="drawedges">Draw Edges</button>
-			  <button class="btn btn-warning" id="removedot">Remove Dot</button>
+			  <button class="btn btn-warning" id="removedots">Remove Selected Dots</button>
 			  <button class="btn btn-warning" id="clear">Clear</button>
 			</div>
     </div>
@@ -107,9 +110,11 @@
 			var context;
 			var coords;
 
+			var dynamicmode = false;
 			var dotmode = false;
 			var selectmode = false;
 			var dragmode = false;
+			var dynamicmove = false;
 
 			var started = false;
 			var startcoords;
@@ -129,7 +134,7 @@
 				handle(); }
 			
 			function mouseDown(event) {
-				if(selectmode && !started) {
+				if((dynamicmode || selectmode) && !started) {
 					startcoords = canvas.relMouseCoords(event);
 					started = true;
 				}
@@ -137,6 +142,18 @@
 					startcoords = canvas.relMouseCoords(event);
 					started = true;
 				}
+				if(dynamicmode) {
+				}
+			}
+
+			function dotAt(a) {
+				for(var k = 0; k < dots.length; ++k) {
+					if(dots[k].x <= a.x + 5 && dots[k].x >= a.x - 5
+							&& dots[k].y <= a.y + 5 && dots[k].y >= a.y - 5) {
+						return k;
+					}
+				}
+				return false;
 			}
 
 			function mouseMove(event) {
@@ -154,6 +171,15 @@
 					coords = canvas.relMouseCoords(event);
 					redrawDotsDrag({x:(coords.x-startcoords.x), y:(coords.y-startcoords.y)});
 				}
+				if(dynamicmode && started) {
+					clearCanvas();
+					redrawDots();
+					coords = canvas.relMouseCoords(event);
+					context.beginPath();
+					context.setLineDash([6]);
+					context.strokeRect(startcoords.x,startcoords.y,coords.x-startcoords.x,coords.y-startcoords.y);	
+					context.setLineDash([0]);
+				}
 			}
 
 			function mouseUp(event) {
@@ -170,6 +196,19 @@
 					endcoords = canvas.relMouseCoords(event);
 					clearCanvas();
 					updateDots({x:(endcoords.x-startcoords.x), y:(endcoords.y-startcoords.y)});
+				}
+				if(dynamicmode) {
+					started = false;
+					endcoords = canvas.relMouseCoords(event);
+					if(startcoords.x >= endcoords.x - 3 && startcoords.x <= endcoords.x + 3
+							&& startcoords.y >= endcoords.y - 3 && startcoords.y <= endcoords.y + 3) {
+						drawDot();
+					} else {
+						toggleSelectedDots();
+						colorSelectedDots();
+						clearCanvas();
+						redrawDots();
+					}
 				}
 				if(dotmode) {
 					drawDot();
@@ -220,11 +259,14 @@
 
 			function removeSelectedDots() {
 				for(var k = 0; k < dots.length; ++k) {
-					if(selected[k]) remove(k);
+					if(selected[k]) {
+						remove(k);
+						--k;
+					}
 				}
 			}
 
-			function drawDot(event) {
+			function drawDot() {
 				coords = canvas.relMouseCoords(event);
 				context.beginPath();
 				context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
@@ -238,7 +280,7 @@
 				selected.push(0);
 			}
 
-			function redrawDots(event) {
+			function redrawDots() {
 				context.setLineDash([0]);
 				for(var k = 0; k < dots.length; ++k) {
 					coords = dots[k];
@@ -338,33 +380,35 @@
 				redrawDots();
 			}
 
-			function swap(a, b) {
+			function swapindices(a, b) {
 				var t = selected[a];
 				selected[a] = selected[b];
 				selected[b] = t;
+				t = dots[a];
+				dots[a] = dots[b];
+				dots[b] = t;
 				for(var k = 0; k < edges.length; ++k) {
 					if(edges[k].a == a) {
 						edges[k].a = b;
+					} else if(edges[k].a == b) {
+						edges[k].a = a;
 					}
 					if(edges[k].b == a) {
 						edges[k].b = b;
-					}
-					if(edges[k].a == b) {
-						edges[k].a = a;
-					}
-					if(edges[k].b == b) {
+					} else if(edges[k].b == b) {
 						edges[k].b = a;
 					}
 				}
 			}
 
 			function remove(a) {
-				swap(a, dots.length - 1);
 				for(var k = 0; k < edges.length; ++k) {
 					if(edges[k].a == a || edges[k].b == a) {
 						edges.splice(k, 1);
+						--k;
 					}
 				}
+				swapindices(a, dots.length - 1);
 				selected.splice(selected.length - 1, 1);
 				dots.splice(dots.length - 1, 1);
 				clearCanvas();
@@ -372,9 +416,13 @@
 			}
 
 			function handle() {
+				dynamicmode = false;
 				dotmode = false;
 				selectmode = false;
 				dragmode = false;
+				if(document.getElementById("dynamic").checked) {
+					dynamicmode = true;
+				}
 				if(document.getElementById("dot").checked) {
 					dotmode = true;
 				}
@@ -401,6 +449,7 @@
 			$("#clear").click(function() {
 				dots = [];
 				selected = [];
+				edges = [];
 				clearCanvas();
 			});
 		</script>
