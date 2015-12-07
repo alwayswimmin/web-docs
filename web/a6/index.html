@@ -70,9 +70,10 @@
 			  </label>
 			</div>
 			<div style="padding-top:5px" id="buttons">
-			  <button class="btn btn-warning" id="clear">Clear</button>
 			  <button class="btn" id="deselect">Deselect All</button>
 			  <button class="btn" id="drawedges">Draw Edges</button>
+			  <button class="btn btn-warning" id="removedot">Remove Dot</button>
+			  <button class="btn btn-warning" id="clear">Clear</button>
 			</div>
     </div>
     <!-- Bootstrap core JavaScript
@@ -217,7 +218,13 @@
 				}
 			}
 
-			function drawDot() {
+			function removeSelectedDots() {
+				for(var k = 0; k < dots.length; ++k) {
+					if(selected[k]) remove(k);
+				}
+			}
+
+			function drawDot(event) {
 				coords = canvas.relMouseCoords(event);
 				context.beginPath();
 				context.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
@@ -231,7 +238,7 @@
 				selected.push(0);
 			}
 
-			function redrawDots() {
+			function redrawDots(event) {
 				context.setLineDash([0]);
 				for(var k = 0; k < dots.length; ++k) {
 					coords = dots[k];
@@ -323,6 +330,47 @@
 				context.clearRect(0, 0, canvas.width, canvas.height);
 			}
 
+			function deselectAll() {
+				for(var k = 0; k < dots.length; ++k) {
+					selected[k] = false;
+				}
+				clearCanvas();
+				redrawDots();
+			}
+
+			function swap(a, b) {
+				var t = selected[a];
+				selected[a] = selected[b];
+				selected[b] = t;
+				for(var k = 0; k < edges.length; ++k) {
+					if(edges[k].a == a) {
+						edges[k].a = b;
+					}
+					if(edges[k].b == a) {
+						edges[k].b = b;
+					}
+					if(edges[k].a == b) {
+						edges[k].a = a;
+					}
+					if(edges[k].b == b) {
+						edges[k].b = a;
+					}
+				}
+			}
+
+			function remove(a) {
+				swap(a, dots.length - 1);
+				for(var k = 0; k < edges.length; ++k) {
+					if(edges[k].a == a || edges[k].b == a) {
+						edges.splice(k, 1);
+					}
+				}
+				selected.splice(selected.length - 1, 1);
+				dots.splice(dots.length - 1, 1);
+				clearCanvas();
+				redrawDots();
+			}
+
 			function handle() {
 				dotmode = false;
 				selectmode = false;
@@ -337,15 +385,17 @@
 					dragmode = true;
 				}
 			}
+			
+			$("#removedots").click(function() {
+				removeSelectedDots();
+			});
 
-			$("#drawedges").click(function() {drawEdges();});
+			$("#drawedges").click(function() {
+				drawEdges();
+			});
 
-			$("#deselect").click(function deselectAll() {
-				for(var k = 0; k < dots.length; ++k) {
-					selected[k] = false;
-				}
-				clearCanvas();
-				redrawDots();
+			$("#deselect").click(function() {
+				deselectAll();
 			});
 
 			$("#clear").click(function() {
