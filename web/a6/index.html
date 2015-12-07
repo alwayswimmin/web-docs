@@ -116,6 +116,7 @@
 
 			var dots = [];
 			var selected = [];
+			var edges = [];
 
 			function onLoad() {
 				HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
@@ -243,6 +244,7 @@
 					context.stroke();
 					context.closePath();
 				}
+				redrawEdges();
 			}
 
 			function updateDots(delta) {
@@ -261,6 +263,7 @@
 					context.stroke();
 					context.closePath();
 				}
+				redrawEdges();
 			}
 
 			function redrawDotsDrag(delta) {
@@ -280,6 +283,7 @@
 					context.stroke();
 					context.closePath();
 				}
+				redrawEdges();
 			}
 
 			function drawEdges() {
@@ -291,11 +295,27 @@
 							context.lineWidth = 2;
 							context.strokeStyle = '#003300';
 							context.moveTo(dots[k].x, dots[k].y);
-							context.lineTo(dots[k].x, dots[k].y);
+							context.lineTo(dots[j].x, dots[j].y);
 							context.stroke();
 							context.closePath();
+							edges.push({a:k, b:j});
 						}
 					}
+				}
+			}
+
+			function redrawEdges() {
+				context.setLineDash([0]);
+				for(var i = 0; i < edges.length; ++i) {
+					var k = edges[i].a;
+					var j = edges[i].b;
+					context.beginPath();
+					context.lineWidth = 2;
+					context.strokeStyle = '#003300';
+					context.moveTo(dots[k].x, dots[k].y);
+					context.lineTo(dots[j].x, dots[j].y);
+					context.stroke();
+					context.closePath();
 				}
 			}
 
@@ -318,7 +338,7 @@
 				}
 			}
 
-			$("#drawedges").click(drawEdges(););
+			$("#drawedges").click(function() {drawEdges();});
 
 			$("#deselect").click(function deselectAll() {
 				for(var k = 0; k < dots.length; ++k) {
