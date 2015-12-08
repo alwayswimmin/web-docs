@@ -143,6 +143,12 @@
 					started = true;
 				}
 				if(dynamicmode) {
+					var k = dotAt(canvas.relMouseCoords(event));
+					if(k != -1) {
+						dynamicmove = true;
+						deselectAll();
+						selected[k] = true;
+					}
 				}
 			}
 
@@ -153,7 +159,7 @@
 						return k;
 					}
 				}
-				return false;
+				return -1;
 			}
 
 			function mouseMove(event) {
@@ -166,12 +172,12 @@
 					context.strokeRect(startcoords.x,startcoords.y,coords.x-startcoords.x,coords.y-startcoords.y);	
 					context.setLineDash([0]);
 				}
-				if(dragmode && started) {
+				if((dragmode || dynamicmove) && started) {
 					clearCanvas();
 					coords = canvas.relMouseCoords(event);
 					redrawDotsDrag({x:(coords.x-startcoords.x), y:(coords.y-startcoords.y)});
 				}
-				if(dynamicmode && started) {
+				if(dynamicmode && !dynamicmove && started) {
 					clearCanvas();
 					redrawDots();
 					coords = canvas.relMouseCoords(event);
@@ -191,13 +197,14 @@
 					clearCanvas();
 					redrawDots();
 				}
-				if(dragmode) {
+				if(dragmode || dynamicmove) {
+					dynamicmove = false;
 					started = false;
 					endcoords = canvas.relMouseCoords(event);
 					clearCanvas();
 					updateDots({x:(endcoords.x-startcoords.x), y:(endcoords.y-startcoords.y)});
 				}
-				if(dynamicmode) {
+				else if(dynamicmode) {
 					started = false;
 					endcoords = canvas.relMouseCoords(event);
 					if(startcoords.x >= endcoords.x - 3 && startcoords.x <= endcoords.x + 3
