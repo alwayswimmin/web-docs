@@ -9,12 +9,12 @@
 </head>
 <body>
 	<?php
-if (!file_exists('time.txt')) {
-$time = file_get_contents("time.txt");
-echo "<div>Last visit at $time.</div>";
-}
-$time = time();
-file_put_contents('time.txt', $time . "\n");
+		if (file_exists('time.txt')) {
+			$time = file_get_contents("time.txt");
+			echo "<div>Last visit at $time.</div>";
+		}
+		$time = date(DATE_RSS);
+		file_put_contents('time.txt', $time . "\n");
 		$filename = "visit_count.txt";
 		if(file_exists($filename)) {
 			$count = intval(file_get_contents($filename)) + 1;
