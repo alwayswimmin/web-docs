@@ -78,6 +78,9 @@
 			  <button class="btn btn-warning" id="removedots">Remove Selected Dots</button>
 			  <button class="btn btn-warning" id="clear">Clear</button>
 			</div>
+			<div style="padding-top:5px" id="buttons-row-2">
+			  <button class="btn btn-primary" id="save">Save</button>
+			</div>
     </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -134,7 +137,9 @@
 				canvas.addEventListener('mousemove',mouseMove,false);
 				document.addEventListener('keydown',keyDown,false);
 				document.addEventListener('keyup',keyUp,false);
-				handle(); }
+				request();
+				handle();
+			}
 			
 			function mouseDown(event) {
 				if((dynamicmode || selectmode) && !started) {
@@ -459,6 +464,10 @@
 				deselectAll();
 			});
 
+			$("#save").click(function() {
+				save();
+			});
+
 			$("#clear").click(function() {
 				dots = [];
 				selected = [];
@@ -499,8 +508,46 @@
 					ctrlpress = false;
 				}
 			}
+
+			var name;
+
+			function request() {
+				var xmlhttp = new XMLHttpRequest();
+				name = prompt("Name", "tmrudwick");
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						console.log(xmlhttp.responseText);
+						if((xmlhttp.responseText).length != 0)
+						{
+							var temp = JSON.parse(xmlhttp.responseText);
+							dots = temp;
+							redrawDots();
+						}
+					}
+				}
+				var args = {
+					name: name
+				};
+				xmlhttp.open("GET", "request.php?"+dw_encodeVars(args), true);
+				xmlhttp.send();
+			}
 			function save() {
-				
+				var xmlhttp = new XMLHttpRequest();
+				var strdots = JSON.stringify(dots);
+				var args = {
+					name: name,
+					data: strdots
+				};
+				xmlhttp.open("GET", "save.php?"+dw_encodeVars(args), true);
+				xmlhttp.send();
+				alert("Saved to " + name + ".txt");
+			}
+			function dw_encodeVars(params) {
+				var str = '';
+				for (var i in params ) {
+					str += encodeURIComponent(i) + '=' + encodeURIComponent( params[i] ) + '&';
+				}
+				return str.slice(0, -1);
 			}
 		</script>
 	</body>
