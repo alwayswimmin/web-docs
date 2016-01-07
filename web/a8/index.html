@@ -1,0 +1,26 @@
+<html>
+<head>
+	<title>Sun</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body>
+	<h1>Sunrise and Sunset</h1>
+	<form class="col-md-7" autocomplete="on" id="form">
+			<div class="form-group" id="namediv">
+    			<label for="name">Location</label>
+    			<input type="text" class="form-control" id="stat" placeholder="Washington,DC">
+ 			</div>
+ 			<div class="">
+ 				<button class="btn btn-default" type="submit">Get Sun Info</button>
+ 			</div>
+ 	</form>	
+ 	<div class="col-md-7">
+ 		<h3>Sunrise: </h3>
+ 		<p id="rise">Enter in location to get data!</p>
+ 		<h3>Sunset: </h3>
+ 		<p id="set">Enter in location to get data!</p>
+ 	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="api.js" type="text/javascript"></script></body>
+</html>
